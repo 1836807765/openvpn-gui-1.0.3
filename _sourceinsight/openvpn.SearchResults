@@ -1,0 +1,14 @@
+---- struct options o Matches (13 in 12 files) ----
+Main.c (c:\openvpn-gui-1.0.3):struct options o;
+Openvpn.c (c:\openvpn-gui-1.0.3):extern struct options o;
+Openvpn_config.c (c:\openvpn-gui-1.0.3):extern struct options o;
+Openvpn_monitor_process.c (c:\openvpn-gui-1.0.3):extern struct options o;
+Options.c (c:\openvpn-gui-1.0.3):extern struct options o;
+Passphrase.c (c:\openvpn-gui-1.0.3):extern struct options o;
+Proxy.c (c:\openvpn-gui-1.0.3):extern struct options o;
+Registry.c (c:\openvpn-gui-1.0.3):extern struct options o;
+Scripts.c (c:\openvpn-gui-1.0.3):extern struct options o;
+Service.c (c:\openvpn-gui-1.0.3):extern struct options o;
+Tray.c (c:\openvpn-gui-1.0.3):extern struct options o;
+Tray.c (c:\openvpn-gui-1.0.3):  //extern struct options o;
+Viewlog.c (c:\openvpn-gui-1.0.3):extern struct options o;
