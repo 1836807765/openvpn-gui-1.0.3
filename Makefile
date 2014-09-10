@@ -1,11 +1,12 @@
 # This makefile builds OpenVPN-GUI using the mingw environment.
 
-OPENSSL = D:/openssl-1.0.0e
-
+OPENSSL =D:\sslvpn\openssl-1.0.1g
 RES_LANG = cn
 GUI_VERSION = 1.0.3
 
-EXE = openvpn-gui-$(GUI_VERSION)-$(RES_LANG).exe
+#EXE = openvpn-gui-$(GUI_VERSION)-$(RES_LANG).exe
+EXE = SSLVPNCERT.exe
+
 
 HEADERS = main.h openvpn.h openvpn_monitor_process.h tray.h viewlog.h \
           service.h options.h passphrase.h openvpn-gui-res.h proxy.h \

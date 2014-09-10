@@ -310,6 +310,8 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
           return FALSE;
       }
       //add by mey start检测设备更改消息
+      /* 
+       //add by andy,fix bug stop connect while device change start
 		case WM_DEVICECHANGE:
 			if(!CheckVPNConnected())
 			{
@@ -326,6 +328,9 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 				g_bFunIn = false;
 			}			
 			break;
+      //add by andy,fix bug stop connect while device change end
+      */
+	
 			//add by mey end检测设备更改消息
     default:			/* for messages that we don't deal with */
       if (message == s_uTaskbarRestart)
