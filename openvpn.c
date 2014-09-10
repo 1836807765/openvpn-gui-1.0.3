@@ -312,10 +312,12 @@ int StartOpenVPN(int config)
   start_info.hStdInput = hInputRead;
   start_info.hStdOutput = hOutputWrite;
   start_info.hStdError = hErrorWrite;
-
+	
   /* Run Pre-connect script */
   CLEAR (return_string);
-  goto never_show_cert_ui;//modify by mey 20140601 
+  //note by andy fix bug never_show_cert_ui start
+  //goto never_show_cert_ui;//modify by mey 20140601
+  //note by andy fix bug never_show_cert_ui end
   //add by mey start 从文件中读取指纹信息
   FILE *fp;
   char line[256];
@@ -327,10 +329,11 @@ int StartOpenVPN(int config)
   	p = strrchr(file_path, '\\');
   if(p != NULL)
   	*p=0x00;
-  strncat(file_path, "\\m_key.txt", 10);  
+  strncat(file_path, "\\m_key.txt", 10);
   if (!(fp=fopen(file_path, "r")))
   {
-  	MessageBox(NULL, "打开文件失败！", "提示信息", MB_OK);
+	  //comment by andy
+  	//MessageBox(NULL, "打开文件失败！", "提示信息", MB_OK);
   	goto show_cert_ui;   
   }
   else
@@ -339,8 +342,11 @@ int StartOpenVPN(int config)
     if (fgets(line, sizeof (line), fp))
     {
     	//判断是否是需要的命令格式
-    	if(NULL == strstr(line, "cryptoapicert"))				
+    	if(NULL == strstr(line, "cryptoapicert"))
+	{	
+		fclose(fp);
     		goto show_cert_ui;
+	}
     	else
     		strncpy(return_string, line, sizeof(return_string));	
     }
@@ -348,13 +354,14 @@ int StartOpenVPN(int config)
     {    	  
   		goto show_cert_ui;
     }
+    fclose(fp);
   }
   goto never_show_cert_ui;
   	
 show_cert_ui:
   if (!(fp=fopen(file_path, "w+")))
   {
-  	MessageBox(NULL, "创建文件失败！", "提示信息", MB_OK);
+  	//MessageBox(NULL, "创建文件失败！", "提示信息", MB_OK);
     /* can't open key file */      
     strncpy(return_string, "--cryptoapicert \"THUMB:7A 86 EE 18 DA 83 DA 24 7C 3F 76 81 6D A6 13 6F 2A 37 D3 42\"", sizeof(return_string));   		
   }
@@ -365,23 +372,32 @@ show_cert_ui:
 	  RunPreconnectScript(config, return_string, sizeof(return_string));
 	  if ((return_string[0] == ' ')&&(return_string[1] == '-')&&(return_string[2] == '-')) //return_string is some option(s) like --cryptoapicert "THUMB:f6 49 24 41 01 b4 ..."
 	  { //append the return_string to command_line
-	  	 ;//strncat(command_line, return_string, sizeof(command_line) - strlen(command_line) - 1);
+		  //open comment by andy start
+	  	 strncat(command_line, return_string, sizeof(command_line) - strlen(command_line) - 1);
+		  //open comment by andy end
 	  }    	
-	    	
 	  fputs (return_string,fp);
-	  fclose (fp);  		
- 	} 
+	  fclose (fp);
+	  //add by andy start 
+	  goto start_proce;
+	  //add by abdy end
+
+ } 
  	
-never_show_cert_ui:	
+never_show_cert_ui:
+	//rewrite this part by andy start
+	strncat(command_line, return_string, sizeof(command_line) - strlen(command_line) - 1);
+	//rewrite this part by andy end
+	  
     //add by mey end 从文件中读取指纹信息
   //del by mey start 不弹出证书选择框
 	
-	strncpy(return_string, " Select_Cert", sizeof(return_string));
-  RunPreconnectScript(config, return_string, sizeof(return_string));
-  if ((return_string[0] == ' ')&&(return_string[1] == '-')&&(return_string[2] == '-')) //return_string is some option(s) like --cryptoapicert "THUMB:f6 49 24 41 01 b4 ..."
-    { //append the return_string to command_line
-  	  strncat(command_line, return_string, sizeof(command_line) - strlen(command_line) - 1);
-    }
+//  strncpy(return_string, " Select_Cert", sizeof(return_string));
+ // RunPreconnectScript(config, return_string, sizeof(return_string));
+ // if ((return_string[0] == ' ')&&(return_string[1] == '-')&&(return_string[2] == '-')) //return_string is some option(s) like --cryptoapicert "THUMB:f6 49 24 41 01 b4 ..."
+  //  { //append the return_string to command_line
+ // 	  strncat(command_line, return_string, sizeof(command_line) - strlen(command_line) - 1);
+  //  }
     
     //del by mey end 不弹出证书选择框
 
@@ -395,6 +411,7 @@ never_show_cert_ui:
 		//strncat(command_line, return_string, sizeof(command_line) - strlen(command_line) - 1);
 		//MessageBox(NULL, command_line, "mey-test", MB_OK);
   /* create an OpenVPN process for one config file */
+start_proce:
   if (!CreateProcess(o.exe_path,
 		     command_line,
 		     NULL,
@@ -417,7 +434,6 @@ never_show_cert_ui:
   /* close unneeded handles */
   Sleep (250); /* try to prevent race if we close logfile
                   handle before child process DUPs it */
-
   if(!CloseHandle (proc_info.hThread) ||
      !CloseHandle (hOutputWrite) ||
      !CloseHandle (hInputRead) ||
@@ -1098,6 +1114,7 @@ int CheckUSBKeyChanged()
     {  	  
   		return 0;
     }
+    fclose(fp);
   }	
 }
 

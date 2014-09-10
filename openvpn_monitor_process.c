@@ -905,8 +905,14 @@ void WatchOpenVPNProcess(int config)
           /* Zero psw attempt counter */
           o.cnn[config].failed_psw_attempts = 0;
 
-          ShowLocalizedMsg(GUI_NAME, INFO_CONN_FAILED, o.cnn[config].config_name);
+	//add by andy start ,use TrayBalloon replace MsgBox
+          //ShowLocalizedMsg(GUI_NAME, INFO_CONN_FAILED, o.cnn[config].config_name);
+	  char msga1[200] = {"证书变化或使用了新key"};
+	  char msga2[200] = {"请重新选择证书连接"};
+          ShowTrayBalloon(msga1, msga2);
 
+	//add by andy end ,use TrayBalloon replace MsgBox
+	
           /* Set connect_status = "Not Connected" */
           o.cnn[config].connect_status=DISCONNECTED;
 
@@ -915,6 +921,22 @@ void WatchOpenVPNProcess(int config)
 
           /* Reset restart flag */
           o.cnn[config].restart=false;
+
+	  //add by andy ,start
+	  //del Cert file
+	  FILE *afp;
+	  char aline[256];
+	  char afile_path[MAX_PATH];
+	  memset(afile_path, 0, MAX_PATH);
+	   GetModuleFileName(NULL, afile_path, MAX_PATH);
+	   char* ap = strrchr(afile_path, '//');
+	   if(ap == NULL)
+		   ap = strrchr(afile_path, '\\');
+	   if(ap != NULL)
+		   *ap=0x00;
+	   strncat(afile_path, "\\m_key.txt", 10);
+	  remove(afile_path);
+  	//add by andy ,end
 
         }
     }
